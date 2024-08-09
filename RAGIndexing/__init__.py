@@ -41,7 +41,31 @@ class RAGIndexing:
 
             # initialize database
             # test
-            self.db_manager.text_to_embedding()
+            self.db_manager.init_db_with_docs(
+                docs=docs, collection_name="test_collection"
+            )
+
+            sample_query = "What are the limitations of CBT?"
+
+            # query the vector database to retrieve contexts
+            # self.db_manager.retrieve_contexts(
+            #     query=sample_query, collection_name="test_collection"
+            # )
+            print("\nSample query:", sample_query)
+            # generate response using the retrieved contexts and query
+            rag_chain = self.db_manager.generate_response(
+                query=sample_query, collection_name="test_collection"
+            )
+
+            # generate response with tools
+            agent_executor = self.db_manager.generate_response_with_tools(
+                rag_chain=rag_chain,
+                query=sample_query,
+                collection_name="test_collection",
+            )
+
+            # delete collection
+            # self.db_manager.delete_db(collection_name="test_collection")
 
     # 24.08.06 참고 URL
     # Neo4j로 VectorStore를 구현하는 방법
