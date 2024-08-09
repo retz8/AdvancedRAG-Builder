@@ -1,28 +1,58 @@
 # import different functions from other files in the package
 # RAGIndexing/__init__.py
+from RAGIndexing.pdf_manager import PDFManager
+from RAGDatabase import RAGDatabase
+
 
 class RAGIndexing:
-    def __init__(self, database_type='vector'):
-        self.text = "Hello, World!"
+    """
+    LLM RAG Indexing class
+
+    @args:
+    - file_type: dataset type (pdf, csv, txt)
+    - file_path
+    - database_type: vector DB or knowledge graph (vector, graph)
+    - config: dict (optional)
+
+    @desc:
+    - load documents
+    - process documents
+    - chunk documents
+    - add chunks to database
+    """
+
+    def __init__(self, file_type: str, file_path: str, database_type: str, config=None):
+        self.file_type = file_type
+        self.file_path = file_path
         self.database_type = database_type
-    
+
+        # database configuration
+        self.db_manager = RAGDatabase(database_type=database_type)
+
+        self.config = config
+
     def test(self):
-        """ testing function """
-        print("Hello, Worldd!")
-    
-    def print_text(self):
-        print(self.text)
+        """testing overall flow"""
+        if self.file_type == "pdf":
+            # initialize document manager
+            pdf_manager = PDFManager(self.file_path)
+            # process pdf
+            docs = pdf_manager.process_pdf()
+
+            # initialize database
+            # test
+            self.db_manager.text_to_embedding()
 
     # 24.08.06 참고 URL
     # Neo4j로 VectorStore를 구현하는 방법
     # https://python.langchain.com/v0.2/docs/integrations/vectorstores/neo4jvector/#working-with-vectorstore
-    
+
     # def __init__(self, db_type='vector', config=None):
     #     # Initialize data loader, document processor, chunker, and database managers
     #     self.data_loader = DataLoader(config)
     #     self.document_processor = DocumentProcessor()
     #     self.chunker = Chunker()
-        
+
     #     if db_type == 'vector':
     #         self.db_manager = VectorDBManager(config)
     #     elif db_type == 'graph':
@@ -54,5 +84,3 @@ class RAGIndexing:
     #     """Reconfigure the RAGIndexing instance."""
     #     self.data_loader.update_config(config)
     #     self.db_manager.update_config(config)
-
-
