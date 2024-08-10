@@ -1,0 +1,13 @@
+# Datasets Configuration
+# This yaml file will be modified later to include more details
+
+datasets:
+    sample-collection:
+      description: "A collection of sample documents, mainly about Cognitive Behavioral Therapy"
+      database_type: "vector"
+      embedding_model: "models/text-embedding-004"
+      files:
+        - path: "./data/sample/common_questions_cbt.pdf"
+          type: "pdf"
+        - path: "./data/sample/Cognitive_Behavioral_Therapy_Strategies.pdf"
+          type: "pdf"

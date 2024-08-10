@@ -1,0 +1,62 @@
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+
+class Config:
+    """
+    RAG Configuration manager class
+    """
+
+    def __init__(self, config):
+        self.config = config
+
+    def get_dataset_names(self):
+        """
+        Get dataset names from configuration
+        """
+        return self.config["datasets"].keys()
+
+    def get_dataset_info(self, dataset_name):
+        """
+        Get dataset information from configuration
+        """
+        return self.config["datasets"][dataset_name]
+
+    def get_dataset_type(self, dataset_name):
+        """
+        Get dataset type from configuration
+        """
+        return self.config["datasets"][dataset_name]["database_type"]
+
+    def get_dataset_description(self, dataset_name):
+        """
+        Get dataset description from configuration
+        """
+        return self.config["datasets"][dataset_name]["description"]
+
+    def get_dataset_embedding_model(self, dataset_name):
+        """
+        Get dataset embedding model from configuration
+        """
+        model = self.config["datasets"][dataset_name]["embedding_model"]
+        embedding_model = GoogleGenerativeAIEmbeddings(model=model)
+
+        return embedding_model
+
+    def get_dataset_files(self, dataset_name):
+        """
+        Get dataset files from configuration
+        """
+        return self.config["datasets"][dataset_name]["files"]
+
+
+# {
+#     "description": "A collection of sample documents, mainly about Cognitive Behavioral Therapy",
+#     "database_type": "vector",
+#     "files": [
+#         {"path": "./data/sample/common_questions_cbt.pdf", "type": "pdf"},
+#         {
+#             "path": "./data/sample/Cognitive_Behavioral_Therapy_Strategies.pdf",
+#             "type": "pdf",
+#         },
+#     ],
+# }

@@ -13,3 +13,4 @@ A flexible Framework for building advanced Retrieval-Augmented Generation (RAG) 
 - pypdf: read and write PDF files
 - python-dotenv: read and write .env files
 
+## Folder Structure

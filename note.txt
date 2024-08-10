@@ -1,0 +1,37 @@
+24.08.10
+딱 알았다. 이 프로젝트의 최종 결과물은 다음과같다.
+완전 쌈뽕한 Advanced LLM RAG CLI를 만드는거임 쿠쿠르삥뽕
+
+1) 이렇게 Index 구성할래용~ (yaml 파일을 이용해서 config를 받음)
+어떤 dataset들을 어떤 종류의 db에 저장할껀지
+=> 결과: 쀼루루룩 Cloud에 ChromaDB혹은 Neo4j에 각각의 Index가 올라감
+
+2) individual chain 만들래용~
+=> 결과: cloud에 저장되어있는 index들을 가져와서 langchain의 chain으로 말아줌
+
+3) RAG pipline 만들래용~ (yaml 파일을 이용해서 config를 받음)
+query expansion 할래용?
+context reranking 할래용?
+context compression 할래용?
+=> 결과: 모든 chain들을 원하는 구조대로 합쳐놓은 최죙 RAGchain이 만들어짐
+
+4) Test Mode면, 로컬에서 쿼리를 할 수 있도록
+   Eval Mode면, test dataset을 이용해 eval 결과를 배출
+   Deploy Mode면, LangServe를 통해 만들어진 최종 RAGChain을 배포 후 REST API로 제공
+
+
+그럼 이걸 어떻게 구현하는가?
+지금 아이디어는...
+
+AdancedRAG라는 최상위 클래스를 만든다. 
+그 아래에...
+- VectorDBManager
+    - { chain, collection } []
+- KnowledgeGraphManager (community edition only supports one instance...)
+    - { chain, instance } []
+- PipelineManager
+    -> aggregate DB Managers' chains to single pipeline chain
+    - has query expansion, context reranking, and compression functionalities
+    -> final RAG chain
+
+* 일단 테스트를 위해서 원라인 test코드를 작성하자

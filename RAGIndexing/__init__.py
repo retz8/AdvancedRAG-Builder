@@ -39,30 +39,33 @@ class RAGIndexing:
             # process pdf
             docs = pdf_manager.process_pdf()
 
-            # initialize database
-            # test
-            self.db_manager.init_db_with_docs(
-                docs=docs, collection_name="test_collection"
+            # test database manager with vector DB and sample docs
+
+            sample_db_manager = RAGDatabase(database_type="vector")
+            test_collection_name = "test_collection"
+            sample_db_manager.init_db(collection_name=test_collection_name)
+            sample_db_manager.add_docs_to_db(
+                docs=docs, collection_name=test_collection_name
             )
 
-            sample_query = "What are the limitations of CBT?"
+            # sample_query = "What are the limitations of CBT?"
 
             # query the vector database to retrieve contexts
             # self.db_manager.retrieve_contexts(
             #     query=sample_query, collection_name="test_collection"
             # )
-            print("\nSample query:", sample_query)
-            # generate response using the retrieved contexts and query
-            rag_chain = self.db_manager.generate_response(
-                query=sample_query, collection_name="test_collection"
-            )
+            # print("\nSample query:", sample_query)
+            # # generate response using the retrieved contexts and query
+            # rag_chain = self.db_manager.generate_response(
+            #     query=sample_query, collection_name="test_collection"
+            # )
 
-            # generate response with tools
-            agent_executor = self.db_manager.generate_response_with_tools(
-                rag_chain=rag_chain,
-                query=sample_query,
-                collection_name="test_collection",
-            )
+            # # generate response with tools
+            # agent_executor = self.db_manager.generate_response_with_tools(
+            #     rag_chain=rag_chain,
+            #     query=sample_query,
+            #     collection_name="test_collection",
+            # )
 
             # delete collection
             # self.db_manager.delete_db(collection_name="test_collection")
@@ -70,41 +73,3 @@ class RAGIndexing:
     # 24.08.06 참고 URL
     # Neo4j로 VectorStore를 구현하는 방법
     # https://python.langchain.com/v0.2/docs/integrations/vectorstores/neo4jvector/#working-with-vectorstore
-
-    # def __init__(self, db_type='vector', config=None):
-    #     # Initialize data loader, document processor, chunker, and database managers
-    #     self.data_loader = DataLoader(config)
-    #     self.document_processor = DocumentProcessor()
-    #     self.chunker = Chunker()
-
-    #     if db_type == 'vector':
-    #         self.db_manager = VectorDBManager(config)
-    #     elif db_type == 'graph':
-    #         self.db_manager = KnowledgeGraphManager(config)
-    #     else:
-    #         raise ValueError("Unsupported database type. Choose 'vector' or 'graph'.")
-
-    # def load_data(self, dataset_path):
-    #     """Load the dataset."""
-    #     return self.data_loader.load(dataset_path)
-
-    # def process_document(self, document):
-    #     """Process the document."""
-    #     return self.document_processor.process(document)
-
-    # def chunk_document(self, document):
-    #     """Chunk the document into smaller parts."""
-    #     return self.chunker.chunk(document)
-
-    # def add_chunks_to_db(self, chunks):
-    #     """Add chunks to the database."""
-    #     self.db_manager.add_chunks(chunks)
-
-    # def initialize_db(self):
-    #     """Initialize the database."""
-    #     self.db_manager.initialize()
-
-    # def configure(self, config):
-    #     """Reconfigure the RAGIndexing instance."""
-    #     self.data_loader.update_config(config)
-    #     self.db_manager.update_config(config)

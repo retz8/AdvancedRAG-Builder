@@ -37,38 +37,72 @@ class RAGDatabase:
             self.client = chromadb.PersistentClient()
 
     # testing with vector db first
-
-    def init_db_with_docs(self, docs, collection_name):
+    def init_db(self, collection_name):
         """
-        Initialize database with documents
-
-        @args:
-        - docs: list of documents to insert
-        - collection_name
+        Initialize database with empty collection
         """
-        print("==== Initializing `{self.database_type}` database ====")
 
         if self.database_type == "vector":
-            # Check if the collection already exists
+            # check if the collection already exists
+            # if so, delete it first
             existing_collections = self.client.list_collections()
             if any(
                 collection.name == collection_name
                 for collection in existing_collections
             ):
                 print(
-                    f"Collection '{collection_name}' already exists. Skipping addition process."
+                    f"Collection '{collection_name}' already exists. Deleting existing collection."
                 )
-            else:
-                vector_store = Chroma(
-                    client=self.client,
-                    collection_name=collection_name,
-                    embedding_function=self.embedding_model,
-                )
+                self.client.delete_collection(collection_name)
 
-                # insert documents
-                uuids = [str(uuid4()) for _ in range(len(docs))]
-                vector_store.add_documents(documents=docs, ids=uuids)
-                print(f"Added documents to new collection '{collection_name}'")
+            # create a new collection with embedding function
+            self.client.create_collection(collection_name, self.embedding_model)
+            print(f"Created new collection '{collection_name}'")
+
+            return
+
+        # TODO: add grpah database support
+        print("Database type not supported.")
+
+    def add_docs_to_db(self, docs, collection_name):
+        """
+        Add documents to database
+
+        @args
+        - docs: list of documents (Langchain Document) to insert
+        - collection_name: chromaDB collection (table) name
+        """
+
+        if self.database_type == "vector":
+            # error handling: collection not found
+            existing_collections = self.client.list_collections()
+            if not any(
+                collection.name == collection_name
+                for collection in existing_collections
+            ):
+                print(
+                    f"Collection '{collection_name}' not found. You need to initialize the database first."
+                )
+                return
+
+            # get collection object (here, we are using langchain-chroma, not bare chromadb)
+            vector_store = Chroma(
+                client=self.client,
+                collection_name=collection_name,
+                embedding_function=self.embedding_model,
+            )
+            # insert documents
+            # 1. obtain unique ids for each document
+            uuids = [str(uuid4()) for _ in range(len(docs))]
+            # 2. add documents to collection
+            vector_store.add_documents(documents=docs, ids=uuids)
+            print(f"Added `{len(docs)}` documents to collection '{collection_name}'")
+
+            return
+
+        # TODO: add grpah database support
+        print("Database type not supported.")
+        return
 
     def retrieve_contexts(self, query, collection_name):
         """
@@ -143,7 +177,7 @@ class RAGDatabase:
 
             # generate response
             response = rag_chain.invoke({"input": query})
-            print(response["answer"])
+            print("LLM Response: ", response["output"])
 
             return rag_chain
 
@@ -221,3 +255,20 @@ class RAGDatabase:
         """
         vector = self.embedding_model.embed_query(text)
         return vector
+
+    def reset_db(self):
+        """
+        Reset database clients
+        """
+        if self.database_type == "vector":
+            print("==== Resetting Vector Database (ChromaDB) ====")
+            self.client.reset()
+            print("Database reset complete.")
+
+    def list_collections(self):
+        """
+        List collections
+        """
+        if self.database_type == "vector":
+            collections = self.client.list_collections()
+            print(collections)
