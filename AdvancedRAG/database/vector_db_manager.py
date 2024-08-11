@@ -1,6 +1,20 @@
 from langchain_chroma import Chroma
 import chromadb
+import os
+from chromadb import EmbeddingFunction, Documents, Embeddings
 from uuid import uuid4
+import google.generativeai as genai
+
+
+class GeminiEmbeddingFunction(EmbeddingFunction):
+    def __call__(self, input: Documents) -> Embeddings:
+        gemini_api_key = os.getenv("GOOGLE_API_KEY")
+        genai.configure(api_key=gemini_api_key)
+        model = "models/embedding-001"
+        title = "Custom query"
+        return genai.embed_content(
+            model=model, content=input, task_type="retrieval_document", title=title
+        )["embedding"]
 
 
 class VectorDBManager:
@@ -33,6 +47,7 @@ class VectorDBManager:
                 f"Collection '{collection_name}' already exists. Deleting existing collection."
             )
             self.client.delete_collection(collection_name)
+            self.reset_manager()
 
         # # create a new collection with embedding function
         vector_store = Chroma(
@@ -40,6 +55,7 @@ class VectorDBManager:
             collection_name=collection_name,
             embedding_function=embedding_model,
         )
+
         print(f"Created new collection '{collection_name}'")
 
         return
@@ -49,6 +65,7 @@ class VectorDBManager:
         Add documents to database
         """
         # error handling: collection not found
+        print("==== Adding documents to collection ====")
         existing_collections = self.client.list_collections()
         if not any(
             collection.name == collection_name for collection in existing_collections
@@ -69,11 +86,19 @@ class VectorDBManager:
         uuids = [str(uuid4()) for _ in range(len(docs))]
         # 2. add documents to collection
         vector_store.add_documents(documents=docs, ids=uuids)
-        print(f"Added `{len(docs)}` documents to collection '{collection_name}'")
+        print(
+            f"Successfully added `{len(docs)}` documents to collection '{collection_name}'"
+        )
 
         return
 
     # helpful getter functions -----------------------------------------------
+    def reset_manager(self):
+        """
+        Reset database manager
+        """
+        self.client.reset()
+
     def get_collection_names(self):
         """
         Get collection names

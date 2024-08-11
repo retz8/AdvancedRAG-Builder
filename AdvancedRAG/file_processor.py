@@ -46,17 +46,22 @@ class FileProcessor:
         """
         print("==== Processing Files ====")
 
+        docs = []
+
         for file in self.files:
             file_path = file["path"]
             file_type = file["type"]
 
             if file_type == "pdf":
-                docs = self.process_pdf(file_path)
-                return docs
+                doc = self.process_pdf(file_path)
+                docs.extend(doc)
+
             else:
                 # TODO: Add support for other file types
                 print(f"File type '{file_type}' not supported.")
                 exit(1)
+
+        return docs
 
     def process_pdf(self, file_path: str):
         """Load the dataset."""

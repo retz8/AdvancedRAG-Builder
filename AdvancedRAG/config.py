@@ -1,4 +1,32 @@
+import yaml
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+
+def load_yaml_config(config_file_path):
+    """Loads YAML configuration from a file, handling potential errors.
+
+    @args:
+      config_file_path: The path to the YAML configuration file.
+
+    @returns:
+      The parsed YAML data as a Python dictionary, or None if an error occurs.
+    """
+
+    try:
+        with open(config_file_path, "r", encoding="utf-8") as f:
+            config_data = yaml.safe_load(f)
+            return config_data
+    except FileNotFoundError:
+        print(f"Error: Configuration file '{config_file_path}' not found.")
+        exit(1)
+
+    except yaml.YAMLError as e:
+        print(f"Error parsing YAML file: {e}")
+        exit(1)
+
+    except Exception as e:
+        print(f"Error loading configuration: {e}")
+        exit(1)
 
 
 class Config:
@@ -7,7 +35,7 @@ class Config:
     """
 
     def __init__(self, config):
-        self.config = config
+        self.config = load_yaml_config(config)
 
     def get_dataset_names(self):
         """
