@@ -20,8 +20,17 @@ if __name__ == "__main__":
     # print(advanced_rag_manager.get_dataset_names())
 
     # 1. create indexing for sample-collection
-    advanced_rag_manager.create_indexing(dataset_name="sample-collection")
+    # advanced_rag_manager.create_indexing(dataset_name="sample-collection")
 
-    # 2.
+    # 2. query LLM
+    # testing...
+    # advanced_rag_manager.retrieve_contexts(
+    #     query="What are the limitations of CBT?", dataset_name="sample-collection"
+    # )
+
+    advanced_rag_manager.test_query_with_tools(
+        query="How Does CBT Improve Anxiety and Trauma-Related Disorders?",
+        dataset_name="sample-collection",
+    )
 
     # del advanced_rag_manager

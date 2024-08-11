@@ -6,11 +6,15 @@ A flexible Framework for building advanced Retrieval-Augmented Generation (RAG) 
 - langchain: a language processing library
 - langchain_community: a community-driven extension of langchain
 - langchain-text-splitters
-- langchain-goolge-genai: Google GenAI API
+- langchain-google-genai: Google GenAI API
+- langchain_openai: OpenAI API
 - langchain-chroma: Chroma DB as vector store
 - langchainhub
 - tiktoken: tokenization library
 - pypdf: read and write PDF files
 - python-dotenv: read and write .env files
+- sentence-transformers: for reranking context
+- langgraph: for agent-based querying
+- ipython: for interactive computing
 
 ## Folder Structure

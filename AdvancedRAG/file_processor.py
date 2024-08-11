@@ -28,6 +28,11 @@ def str_to_document(text: str):
     return Document(page_content=page_content, metadata=metadata)
 
 
+# TODO: Move this to a utils file
+def document_to_str(doc: Document):
+    return f"page_content='{doc.page_content}' metadata={doc.metadata}"
+
+
 # NOTE: 굳이 클래스로 만들어야하나...?
 class FileProcessor:
     """
