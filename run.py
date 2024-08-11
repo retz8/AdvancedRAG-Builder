@@ -18,6 +18,10 @@ if __name__ == "__main__":
     advanced_rag_manager = AdvancedRAG(config=config_file)
     # debug
     # print(advanced_rag_manager.get_dataset_names())
+
+    # 1. create indexing for sample-collection
     advanced_rag_manager.create_indexing(dataset_name="sample-collection")
+
+    # 2.
 
     # del advanced_rag_manager
